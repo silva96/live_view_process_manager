@@ -1,0 +1,34 @@
+<h1>Listing Processes</h1>
+<form phx-change="filter" class="search-form">
+  <input type="text" name="term" placeholder="Pid or Command" phx-debounce="300" value="<%= @filter  %>">
+  </form>
+<table>
+  <thead>
+    <tr>
+      <th>Pid</th>
+      <th>Command</th>
+      <th>Owner</th>
+      <th>Port</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="processes">
+    <%= for process <- @processes do %>
+      <tr id="process-<%= process.pid %>">
+        <td><%= process.pid %></td>
+        <td><%= process.command %></td>
+        <td><%= process.owner %></td>
+        <td><%= process.port %></td>
+        <td>
+          <span><%= link "info", to: "#", phx_click: "details", phx_value_id: process.pid %> | </span>
+          <span><%= link "kill", to: "#", phx_click: "kill", phx_value_id: process.pid, data: [confirm: "Sure?"] %></span>
+        </td>
+      </tr>
+      <%= if assigns[:details] && process.pid == @details.pid do %>
+          <tr id="details-<%= process.pid %>">
+            <td colspan="5"><p><%= raw @details.info %></p></td>
+          </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
